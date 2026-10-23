@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resistencias comerciales: serie y paralelo</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--bg:#eaf0ee;--grid:#d3dedb;--card:#fbfdfc;--ink:#14233b;--mut:#51627a;--line:#c9d6d2;--acc:#0e8f7e;--accink:#fff;--tan:#d8b27c;--ok:#0b7a43;--okbg:#dff3e7;--no:#8a4b00;--nobg:#fbeed6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1a28;--grid:#192a3c;--card:#14243a;--ink:#e6eef7;--mut:#9fb2c8;--line:#27405c;--acc:#35c2ae;--accink:#06231f;--tan:#c9a06a;--ok:#6fe0a2;--okbg:#12382a;--no:#f2c27a;--nobg:#3b2c12}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1a28;--grid:#192a3c;--card:#14243a;--ink:#e6eef7;--mut:#9fb2c8;--line:#27405c;--acc:#35c2ae;--accink:#06231f;--tan:#c9a06a;--ok:#6fe0a2;--okbg:#12382a;--no:#f2c27a;--nobg:#3b2c12}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+h1{font:700 clamp(1.7rem,4.5vw,2.5rem)/1.1 Georgia,"Times New Roman",serif;margin:0 0 8px;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0 0 22px;max-width:60ch}
+.panel{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:18px;display:grid;gap:16px;grid-template-columns:1.3fr 1fr auto;align-items:end;box-shadow:5px 5px 0 var(--tan)}
+label,.lbl{display:block;font-size:.85rem;font-weight:600;color:var(--mut);margin-bottom:6px}
+.row{display:flex;gap:8px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;min-height:44px}
+select{width:auto}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;min-height:44px;border:0;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer;padding:6px 10px;line-height:1.2}
+.seg button small{display:block;color:var(--mut);font-size:.72rem}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button[aria-pressed="true"] small{color:var(--bg);opacity:.8}
+.go{min-height:44px;border:0;border-radius:8px;background:var(--acc);color:var(--accink);font:700 1rem inherit;font-family:inherit;padding:0 24px;cursor:pointer}
+.go:hover{filter:brightness(1.08)}
+.msg{margin:18px 0 0;color:var(--mut)}
+.err{color:var(--no)}
+.hero{margin-top:26px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:20px;display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:center}
+.hero h2{margin:0 0 4px;font:600 .95rem inherit;font-family:inherit;color:var(--mut)}
+.big{font:700 clamp(2rem,6vw,3.2rem)/1.05 Georgia,serif;margin:0}
+.chip{display:inline-block;border-radius:99px;padding:3px 12px;font-size:.85rem;font-weight:600;margin:10px 8px 0 0}
+.good{background:var(--okbg);color:var(--ok)}.bad{background:var(--nobg);color:var(--no)}.neu{background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.expr{margin:12px 0 0;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:18px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:14px}
+.card h3{margin:0 0 2px;font-size:1rem}
+.card .v{font-weight:700;font-size:1.25rem}
+.card .e{color:var(--mut);font-size:.9rem}
+.card ul{margin:10px 0 0;padding:10px 0 0 0;list-style:none;border-top:1px dashed var(--line);font-size:.86rem;color:var(--mut)}
+.card li{margin:2px 0}
+svg.sch{display:block;margin:8px 0;max-width:100%;height:auto}
+svg.sch line{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+svg.sch .rb{fill:var(--tan);stroke:var(--ink);stroke-width:1.5}
+svg.sch .rt{fill:#14233b;font:600 10.5px "Segoe UI",system-ui,sans-serif}
+svg.sch circle{fill:var(--card);stroke:var(--ink);stroke-width:2}
+h2.sec{margin:28px 0 0;font:700 1.2rem Georgia,serif}
+.foot{margin-top:30px;color:var(--mut);font-size:.88rem;max-width:75ch}
+@media (max-width:760px){.panel{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.go{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Resistencias comerciales con 1, 2 o 3 piezas</h1>
+  <p class="sub">Ingresa el valor que necesitas y elige la tolerancia. El programa prueba todas las combinaciones serie y paralelo posibles y muestra la más cercana de cada tipo.</p>
+
+  <div class="panel">
+    <div>
+      <label for="val">Resistencia deseada</label>
+      <div class="row">
+        <input id="val" type="number" inputmode="decimal" min="0" step="any" placeholder="Ej.: 4.55">
+        <select id="uni" aria-label="Unidad"><option value="1">Ω</option><option value="1e3" selected>kΩ</option><option value="1e6">MΩ</option></select>
+      </div>
+    </div>
+    <div>
+      <span class="lbl">Tolerancia</span>
+      <div class="seg" id="tol">
+        <button type="button" data-t="10" aria-pressed="true">10 %<small>serie E12</small></button>
+        <button type="button" data-t="1" aria-pressed="false">1 %<small>serie E96</small></button>
+      </div>
+    </div>
+    <button class="go" id="go" type="button">Calcular</button>
+  </div>
+
+  <div id="out"><p class="msg">Escribe un valor y pulsa Calcular para ver las combinaciones.</p></div>
+
+  <p class="foot">Método: se usan los valores comerciales de la serie elegida entre 1 Ω y 9.76 MΩ. Para tres resistencias se revisan las cuatro conexiones posibles: las tres en serie, las tres en paralelo, (R1 + R2) ∥ R3 y (R1 ∥ R2) + R3. El símbolo ∥ indica paralelo. El rango que se muestra es el valor obtenido ± la tolerancia elegida.</p>
+</div>
+
+<script>
+const E12=[1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+const E96=[1.00,1.02,1.05,1.07,1.10,1.13,1.15,1.18,1.21,1.24,1.27,1.30,1.33,1.37,1.40,1.43,1.47,1.50,1.54,1.58,1.62,1.65,1.69,1.74,1.78,1.82,1.87,1.91,1.96,2.00,2.05,2.10,2.15,2.21,2.26,2.32,2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.80,2.87,2.94,3.01,3.09,3.16,3.24,3.32,3.40,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,5.62,5.76,5.90,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,7.50,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76];
+const NAMES={R1:"1 resistencia",S2:"2 en serie",P2:"2 en paralelo",S3:"3 en serie",P3:"3 en paralelo",SP:"(R1 + R2) ∥ R3",PS:"(R1 ∥ R2) + R3"};
+const ORDER=["R1","S2","P2","S3","P3","SP","PS"];
+const COUNT={R1:1,S2:2,P2:2,S3:3,P3:3,SP:3,PS:3};
+let tol=10;
+
+function fmt(v){const u=v>=1e6?[1e6,"MΩ"]:v>=1e3?[1e3,"kΩ"]:[1,"Ω"];return (+(v/u[0]).toPrecision(4))+" "+u[1];}
+function pct(e){return e<1e-9?"0 %":(e*100).toFixed(e<0.001?4:2)+" %";}
+function build(E){const a=[];for(let d=0;d<7;d++)for(const m of E)a.push(+(m*Math.pow(10,d)).toFixed(2));return a.sort((x,y)=>x-y);}
+function lb(L,x){let lo=0,hi=L.length;while(lo<hi){const m=(lo+hi)>>1;if(L[m]<x)lo=m+1;else hi=m;}return lo;}
+
+function compute(T,t){
+  const L=build(t===10?E12:E96),n=L.length,best={};
+  ORDER.forEach(k=>best[k]={a:[],keys:new Set(),w:Infinity});
+  function add(k,a,b,c,v,srt){
+    const e=Math.abs(v-T)/T,B=best[k];
+    if(e>B.w)return;
+    let vals=c===undefined?(b===undefined?[a]:[a,b]):[a,b,c];
+    if(srt)vals.sort((x,y)=>x-y);
+    const key=vals.join("|");
+    if(B.keys.has(key))return;
+    B.keys.add(key);B.a.push({k,vals,v,e});
+    if(B.a.length>300){B.a.sort((x,y)=>x.e-y.e);B.a.length=5;B.w=B.a[4].e;}
+  }
+  for(let i=0;i<n;i++){
+    const a=L[i];add("R1",a,undefined,undefined,a);
+    for(let j=i;j<n;j++){
+      const b=L[j],s=a+b,q=a*b/s;
+      add("S2",a,b,undefined,s);add("P2",a,b,undefined,q);
+      let x,p;
+      x=T-s;if(x>0){p=lb(L,x);for(let z=p-1;z<=p;z++){if(z>=0&&z<n)add("S3",a,b,L[z],s+L[z],true);}}
+      if(s>T){x=s*T/(s-T);p=lb(L,x);for(let z=p-1;z<=p;z++){if(z>=0&&z<n){const c=L[z];add("SP",a,b,c,s*c/(s+c));}}}
+      x=T-q;if(x>0){p=lb(L,x);for(let z=p-1;z<=p;z++){if(z>=0&&z<n){const c=L[z];add("PS",a,b,c,q+c);}}}
+      if(q>T){x=q*T/(q-T);p=lb(L,x);for(let z=p-1;z<=p;z++){if(z>=0&&z<n){const c=L[z];add("P3",a,b,c,q*c/(q+c),true);}}}
+    }
+  }
+  const res={};
+  ORDER.forEach(k=>{res[k]=best[k].a.sort((x,y)=>x.e-y.e).slice(0,3);});
+  return res;
+}
+
+function expr(k,v){
+  const f=fmt,[a,b,c]=v;
+  return {R1:f(a),S2:f(a)+" + "+f(b),P2:f(a)+" ∥ "+f(b),S3:f(a)+" + "+f(b)+" + "+f(c),P3:f(a)+" ∥ "+f(b)+" ∥ "+f(c),
+    SP:"("+f(a)+" + "+f(b)+") ∥ "+f(c),PS:"("+f(a)+" ∥ "+f(b)+") + "+f(c)}[k];
+}
+function tree(k,v){
+  const r=x=>({t:"r",v:x}),[a,b,c]=v;
+  return {R1:r(a),S2:{t:"s",c:[r(a),r(b)]},P2:{t:"p",c:[r(a),r(b)]},S3:{t:"s",c:[r(a),r(b),r(c)]},P3:{t:"p",c:[r(a),r(b),r(c)]},
+    SP:{t:"p",c:[{t:"s",c:[r(a),r(b)]},r(c)]},PS:{t:"s",c:[{t:"p",c:[r(a),r(b)]},r(c)]}}[k];
+}
+
+const RW=64,RH=26,G=14,PG=10;
+function lay(n){
+  if(n.t==="r")return{w:RW,h:RH,my:RH/2,s:`<rect class="rb" x="0" y="0" width="${RW}" height="${RH}" rx="5"/><text class="rt" x="${RW/2}" y="${RH/2+4}" text-anchor="middle">${fmt(n.v)}</text>`};
+  const ch=n.c.map(lay);
+  if(n.t==="s"){
+    const up=Math.max(...ch.map(c=>c.my)),dn=Math.max(...ch.map(c=>c.h-c.my));
+    let x=0,s="";
+    ch.forEach((c,i)=>{if(i){s+=`<line x1="${x}" y1="${up}" x2="${x+G}" y2="${up}"/>`;x+=G;}s+=`<g transform="translate(${x},${up-c.my})">${c.s}</g>`;x+=c.w;});
+    return{w:x,h:up+dn,my:up,s};
+  }
+  const W=Math.max(...ch.map(c=>c.w))+2*G;let y=0,s="";const mids=[];
+  ch.forEach((c,i)=>{if(i)y+=PG;const cx=(W-c.w)/2,cy=y+c.my;mids.push(cy);
+    s+=`<line x1="0" y1="${cy}" x2="${cx}" y2="${cy}"/><line x1="${cx+c.w}" y1="${cy}" x2="${W}" y2="${cy}"/><g transform="translate(${cx},${y})">${c.s}</g>`;y+=c.h;});
+  const a=mids[0],b=mids[mids.length-1];
+  s+=`<line x1="0" y1="${a}" x2="0" y2="${b}"/><line x1="${W}" y1="${a}" x2="${W}" y2="${b}"/>`;
+  return{w:W,h:y,my:(a+b)/2,s};
+}
+function draw(k,v,scale){
+  const L=lay(tree(k,v)),pad=20,W=L.w+2*pad,H=L.h+10;
+  return `<svg class="sch" viewBox="0 0 ${W} ${H}" width="${Math.round(W*scale)}" role="img" aria-label="Esquema: ${expr(k,v)}"><g transform="translate(0,5)"><line x1="8" y1="${L.my}" x2="${pad}" y2="${L.my}"/><g transform="translate(${pad},0)">${L.s}</g><line x1="${pad+L.w}" y1="${L.my}" x2="${W-8}" y2="${L.my}"/><circle cx="6" cy="${L.my}" r="4"/><circle cx="${W-6}" cy="${L.my}" r="4"/></g></svg>`;
+}
+function status(e){
+  const ok=e<=tol/100;
+  return ok?`<span class="chip good">Dentro de ±${tol} %</span>`:`<span class="chip bad">Fuera de ±${tol} %</span>`;
+}
+function render(T,res){
+  let all=[];ORDER.forEach(k=>res[k].forEach(r=>all.push(r)));
+  all.sort((x,y)=>x.e-y.e||COUNT[x.k]-COUNT[y.k]);
+  const b=all[0],lo=b.v*(1-tol/100),hi=b.v*(1+tol/100);
+  let h=`<section class="hero"><div><h2>Mejor aproximación a ${fmt(T)}</h2><p class="big">${fmt(b.v)}</p>
+    <span class="chip neu">Error ${pct(b.e)}</span>${status(b.e)}<span class="chip neu">${NAMES[b.k]}</span>
+    <p class="expr"><strong>${expr(b.k,b.vals)}</strong></p>
+    <p class="e" style="color:var(--mut);margin:6px 0 0">Rango real: ${fmt(lo)} a ${fmt(hi)}</p></div>
+    <div>${draw(b.k,b.vals,1.6)}</div></section>
+    <h2 class="sec">Mejor opción de cada conexión</h2><div class="grid">`;
+  ORDER.forEach(k=>{
+    const r=res[k];if(!r.length)return;
+    const m=r[0];
+    h+=`<article class="card"><h3>${NAMES[k]}</h3><div class="v">${fmt(m.v)}</div><div class="e">Error ${pct(m.e)} · ${expr(k,m.vals)}</div>${draw(k,m.vals,1.15)}`;
+    if(r.length>1)h+=`<ul>`+r.slice(1).map(x=>`<li>Alternativa: ${expr(k,x.vals)} = ${fmt(x.v)} (${pct(x.e)})</li>`).join("")+`</ul>`;
+    h+=`</article>`;
+  });
+  document.getElementById("out").innerHTML=h+"</div>";
+}
+
+function run(){
+  const out=document.getElementById("out");
+  const raw=parseFloat(document.getElementById("val").value),u=parseFloat(document.getElementById("uni").value),T=raw*u;
+  if(!(T>0)){out.innerHTML='<p class="msg err">Ingresa un valor mayor que cero.</p>';return;}
+  if(T<0.5||T>3e7){out.innerHTML='<p class="msg err">El valor está fuera del rango que se puede formar: entre 1 Ω y 20 MΩ aproximadamente.</p>';return;}
+  out.innerHTML='<p class="msg">Calculando combinaciones…</p>';
+  setTimeout(()=>render(T,compute(T,tol)),30);
+}
+document.getElementById("go").addEventListener("click",run);
+document.getElementById("val").addEventListener("keydown",e=>{if(e.key==="Enter")run();});
+document.querySelectorAll("#tol button").forEach(b=>b.addEventListener("click",()=>{
+  tol=+b.dataset.t;document.querySelectorAll("#tol button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(document.getElementById("val").value)run();
+}));
+</script>
+</body>
+</html>
